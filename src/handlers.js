@@ -1,7 +1,9 @@
 const path = require('path');
 const fs = require('fs');
+ require("http");
 
 const handleMain = (response) => {
+    console.log("handleMain")
     const filePath = path.join(__dirname, '..', 'public', 'index.html');
     fs.readFile(filePath, (error, file) => {
         if (error) {
