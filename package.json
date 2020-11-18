@@ -9,7 +9,8 @@
   "scripts": {
     "test": "jest ",
     "dev": "nodemon src/server.js",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "kill": "fuser -k 4000/tcp"
   },
   "repository": {
     "type": "git",

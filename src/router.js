@@ -1,8 +1,8 @@
 const { handleMain } = require('./handlers.js')
-const router = (response) => {
+const router = (request, response) => {
     const endPoint = request.url;
     if (endPoint === '/') {
-        handleMain(request, response);
+        handleMain(response);
     }
 }
 
