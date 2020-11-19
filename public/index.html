@@ -7,9 +7,11 @@
     <link href="style.css" rel="stylesheet">
 </head>
 <body>
+    <form name="theForm" class="" action="/search" method="post" id="the-form" autocomplete="off" >
     <h1>Search for a word</h1>
-   <input id="inp" type="text">
-    
+   <input name = "input" id="inp" type="text"  oninput="theForm.submit()"> 
+   
+</form>
     <div id="results"></div>
 
 </body>

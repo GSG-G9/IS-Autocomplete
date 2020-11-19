@@ -1,6 +1,8 @@
 const path = require('path');
 const fs = require('fs');
 require('http');
+const querystring = require('querystring');
+const search = require('../public/search.js');
 
 const handleMain = (response) => {
   console.log('handleMain');
@@ -21,7 +23,6 @@ const handlePublic = (response, url) => {
   const ext = path.extname(url);
   const mimiTypes = {
     '.css': 'text/css',
-    '.js': 'text/javascript',
     '.jpg': 'image/jpeg',
     '.png': 'image/png',
     '.ico': 'image/x-icon',
@@ -41,4 +42,66 @@ const handlePublic = (response, url) => {
   });
 };
 
-module.exports = { handleMain, handlePublic };
+const handleSearch = (request, response) => {
+  console.log('handlesearch');
+  let allData = '';
+
+  request.on('data', (chunkOfData) => {
+    allData += chunkOfData;
+    const convertedData1 = querystring.parse(allData);
+    console.log({ convertedData1 });
+    //  parsedALlData
+    console.log({ convertedData1 });
+
+    const filepath = path.join(__dirname, 'cities.json');
+    fs.readFile(filepath, (error, file) => {
+      if (error) {
+        response.writeHead(500, { 'Content-Type': 'text/html' });
+        return response.end('<h1>server error</h1>');
+      }
+
+      const citiesFile = JSON.parse(file);
+      // console.log({citiesFile})
+      const arr = citiesFile['United States'];
+      console.log({ arr });
+      const inp = convertedData1.input;
+      console.log({ inp });
+      const result = search(inp, arr);
+      console.log({ result });
+      response.writeHead(200, { 'Content-Type': 'application/json' });
+    });
+  });
+
+  request.on('end', () => {
+    const convertedData = querystring.parse(allData);
+    const filepath = path.join(__dirname, 'cities.json');
+    fs.readFile(filepath, (error, file) => {
+      if (error) {
+        response.writeHead(500, { 'Content-Type': 'text/html' });
+        return response.end('<h1>server error</h1>');
+      }
+
+      console.log({ convertedData });
+
+      // allData += chunkOfData;
+    });
+  });
+};
+
+const handleCities = (request, response) => {
+  const filepath = path.join(__dirname, 'results.json');
+  fs.readFile(filepath, (error, file) => {
+    if (error) {
+      response.writeHead(500, 'utf8', { 'Content-Type': 'text/html' });
+      response.end('<h1>server error</h1>');
+    } else {
+      console.log({ file });
+      response.writeHead(200, { 'Content-Type': 'application/json' });
+      response.end(file);
+    }
+  });
+};
+
+module.exports = {
+  handleMain, handlePublic, handleSearch, handleCities,
+};
